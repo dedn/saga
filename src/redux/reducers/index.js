@@ -6,7 +6,8 @@ export const history = createBrowserHistory();
 
 const initial = {
     people: [],
-    planets :[]
+    planets :[],
+    blog: {}
 };
 
 export function appReducer(state = initial, action) {
@@ -27,6 +28,14 @@ export function appReducer(state = initial, action) {
                     ...state.planets,
                     ...action.payload
                 ]
+            }
+        }
+
+        case 'BLOG_LOADED' : {
+            return {
+                ...state,
+                blog:  action.payload
+
             }
         }
         default:
