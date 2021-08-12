@@ -12,7 +12,7 @@ function App() {
     <h1>
       Redux-saga tutorial: lesson #3
         <button
-        onClick={()=> dispatch({type:'CLICK'})}>
+        onClick={()=> dispatch({type:'LOAD_DATA'})}>
           click
         </button>
     </h1>
