@@ -1,9 +1,10 @@
+import PeopleTable from '../components/PeopleTable';
 import React from "react";
-import PeopleTable from "../components/PeopleTable";
 
 function App() {
-
-    return (<PeopleTable/>)
+  return (
+      <PeopleTable />
+  );
 }
 
 export default App;

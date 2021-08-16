@@ -1,57 +1,68 @@
-import { useDispatch, useSelector } from "react-redux";
-import { selectPeople } from "../redux/reducers/people/selectors";
-import Spinner from "react-bootstrap/Spinner";
+import {useDispatch, useSelector} from 'react-redux';
+import {selectPeople} from '../redux/reducers/people/selectors';
+import PeopleTablePagination from "./PeopleTablePagination";
+import {LOAD_USERS} from "../redux/reducers/people/actions";
+import {Link} from "react-router-dom";
 import Table from "react-bootstrap/Table";
+import Spinner from "./Spinner";
 import React from "react";
-import Pagination from "./Pagination";
-import { LOAD_USERS } from "../redux/reducers/people/actions";
+import SpinnerComponent from "./Spinner";
 
 export default function PeopleTable() {
-
-    const people = useSelector(selectPeople)
+    const people = useSelector(selectPeople);
     const dispatch = useDispatch();
 
     const changePage = newPage => dispatch({
         type: LOAD_USERS,
         payload: {
             page: newPage,
-            search: people.search
-        }
-    })
+            search: people.search,
+        },
+    });
+
+    const search = (e) => dispatch({
+        type: LOAD_USERS,
+        payload: {
+            page: 1,
+            search: e.target.value,
+        },
+    });
+
     return (
         <>
-            <h1>Peoples</h1>
+            <h1>
+                Star Wars People
+
+                <form style={{display: 'inline-block', marginLeft: 20}}>
+                    <input
+                        style={{ padding: '8px 6px' }}
+                        type="text"
+                        value={people.search}
+                        placeholder='Search people...'
+                        onChange={search}
+                    />
+                </form>
+            </h1>
             {people.loading ? (
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
+                <SpinnerComponent/>
             ) : (
                 <>
                     <Table striped bordered hover>
                         <thead>
                         <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                Birth
-                            </th>
-                            <th>
-                                Eye Color
-                            </th>
-                            <th>
-                                Gender
-                            </th>
-                            <th>
-                                Hair Color
-                            </th>
-                            <th>
-                                Height
-                            </th>
+                            <th>Name</th>
+                            <th>Birth year</th>
+                            <th>Eye color</th>
+                            <th>Gender</th>
+                            <th>Hair color</th>
+                            <th>Height</th>
+                            <th />
                         </tr>
                         </thead>
                         <tbody>
-                        {people.data.results.map(character => {
+                        {people?.data?.results.map(character => {
+                            const id = character.url.replaceAll(/\D/g, '');
+
                             return (
                                 <tr key={character.name}>
                                     <td>{character.name}</td>
@@ -60,19 +71,23 @@ export default function PeopleTable() {
                                     <td>{character.gender}</td>
                                     <td>{character.hair_color}</td>
                                     <td>{character.height}</td>
+                                    <td>
+                                        <Link to={`/people/${id}`}>
+                                            Details
+                                        </Link>
+                                    </td>
                                 </tr>
-                            )
+                            );
                         })}
                         </tbody>
-
                     </Table>
-                    <Pagination
-                    page={people.page}
-                    total={people.data.count}
-                    onChange={changePage}
+                    <PeopleTablePagination
+                        page={people.page}
+                        total={people.data.count}
+                        onChange={changePage}
                     />
                 </>
             )}
         </>
-    );
+    )
 }

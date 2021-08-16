@@ -1,10 +1,10 @@
 const LIMIT = 10;
 
 export default function PeopleTablePagination({
-                                                  page,
-                                                  total,
-                                                  onChange = () => {}
-                                              }) {
+    page,
+    total,
+    onChange = () => {}
+}) {
     const totalPages = Math.ceil(total / LIMIT);
 
     return (
