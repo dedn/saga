@@ -1,50 +1,19 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
+import peopleReducer from "./people";
 
 export const history = createBrowserHistory();
 
-const initial = {
-    people: [],
-    planets :[],
-    blog: {}
-};
+const initial = {};
 
 export function appReducer(state = initial, action) {
-    switch (action.type) {
-        case 'SET_PEOPLE' : {
-            return {
-                ...state,
-                people: [
-                    ...state.people,
-                    ...action.payload
-                ]
-            }
-        }
-        case 'SET_PLANETS' : {
-            return {
-                ...state,
-                planets: [
-                    ...state.planets,
-                    ...action.payload
-                ]
-            }
-        }
-
-        case 'BLOG_LOADED' : {
-            return {
-                ...state,
-                blog:  action.payload
-
-            }
-        }
-        default:
-            return state
-    }
+    return state
 }
 
 const rootReducer = combineReducers({
     app: appReducer,
+    people: peopleReducer,
     router: connectRouter(history),
 })
 
