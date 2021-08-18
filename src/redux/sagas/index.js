@@ -1,4 +1,4 @@
-import { takeEvery, put, call, fork, spawn, select,take, delay } from 'redux-saga/effects'
+import { takeEvery, put, call, fork, spawn, select, takeLatest, take, delay, cancel } from 'redux-saga/effects'
 import { wrapMapToPropsConstant } from "react-redux/lib/connect/wrapMapToProps";
 import { all } from "@redux-saga/core/effects";
 import { whenMapDispatchToPropsIsFunction } from "react-redux/lib/connect/mapDispatchToProps";
@@ -7,22 +7,39 @@ import pageLoaderSaga from "./pageLoader";
 
 // import { takeEvery } from "@redux-saga/core/effects";
 
-export function* fetchStarsShips() {
-    const response = yield call(fetch, 'http://swapi.dev/api/starships')
+export function* fetchStarsShips(signal) {
+    console.log('load some data start')
+    const response = yield call(fetch, 'http://swapi.dev/api/starships', {signal})
     const date = yield call([response, response.json])
 
 
-    console.log('load some data completing', date)
+    console.log('load some data completing')
 }
 
 export function* loadOnAction() {
+    let task;
+    let abortController = new AbortController()
 
     while(true) {
-        console.log('load some data starts')
         yield take('LOAD_SOME_DATA')
-        yield fork(fetchStarsShips)
+
+        if(task){
+            abortController.abort()
+            yield cancel(task)
+            abortController = new AbortController()
+
+        }
+     task =  yield fork(fetchStarsShips, abortController.signal)
 
     }
+
+ // yield takeLatest('LOAD_SOME_DATA', fetchStarsShips)
+    // while(true) {
+    //     console.log('load some data starts')
+    //     yield take('LOAD_SOME_DATA')
+    //     yield fork(fetchStarsShips)
+    //
+    // }
 }
 
 async function swapiGet(pattern) {
